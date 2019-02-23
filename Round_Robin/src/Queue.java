@@ -4,16 +4,16 @@ public class Queue {
 	private int front;
 	private int rear;
 	private int size;
-	private String[] array;
+	private Process[] array;
 	
 	public Queue(int size){
 		front = -1;
 		rear = -1;
-		array = new String[size];
+		array = new Process[size];
 		this.size =size;
 	}
 	
-	public void enQueue(String value){
+	public void enQueue(Process value){
 		if(isFull()){
 			System.out.println("Queue is full");
 			return;
@@ -66,6 +66,18 @@ public class Queue {
 
 	        } while (i != front);
 	    }
+	}
+	
+	public Process getFront(){	//Get front process
+		return array[front];
+	}
+	
+	public int getCount(){	//Get number of elements in queue
+		int count = 0;
+		for(int i=front;i<=rear;i++){
+			count++;
+		}
+		return count;
 	}
 	
 }
