@@ -1,0 +1,75 @@
+Pseudocode - Scheduler Simulation Assignment 2 - [COEN 346]
+
+//  ###  // 
+
+Classes : 
+
+	- Scheduler
+	- User
+	- Process
+
+//  ###  //
+
+Class Scheduler : 
+
+	Attributes : 
+
+		- time quantum 
+		- FIFO queue
+		- waiting list
+		- system clock
+
+	Methods : 
+
+		- checkReadyTime() // check if the processes are ready for execution (0 == ready)
+		- decrementReadyTime() // decrements the ready time of the given processes by one. 
+
+		- runProcessFifo() // decrements the remaining time of the processes given -> maybe should be run User ? 
+		- addToQueue() // add the process to the FIFO queue 
+
+		- back2Waiting() // pauses the process and send it to the back of the FIFO queue
+
+//  ###  //
+
+Class User : 
+
+	Attributes :
+
+		- Name
+		- list of processes 
+
+	Methods : 
+
+		- Constructor :
+			- init processes and add to the list.
+			- init the Name
+
+		- decrementReadyTime() 
+		- runProcess() // decrements the remaining run time of the process 
+
+//  ###  //
+
+Class Process 
+
+	Attributes : 
+
+		- ID
+		- service time
+		- ready time
+
+		- remainingServiceTime
+		- remainingReadyTime
+
+	Methods
+
+		- Constructor : 
+			- init the ID
+
+		- getRemainingServiceTime() //
+		- getRemainingReadyTime() 
+
+		
+
+
+
+
