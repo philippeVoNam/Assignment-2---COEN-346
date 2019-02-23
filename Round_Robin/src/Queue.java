@@ -4,16 +4,16 @@ public class Queue {
 	private int front;
 	private int rear;
 	private int size;
-	private int[] array;
+	private String[] array;
 	
 	public Queue(int size){
 		front = -1;
 		rear = -1;
-		array = new int[size];
+		array = new String[size];
 		this.size =size;
 	}
 	
-	public void enQueue(int value){
+	public void enQueue(String value){
 		if(isFull()){
 			System.out.println("Queue is full");
 			return;
