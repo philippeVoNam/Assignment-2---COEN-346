@@ -80,4 +80,11 @@ public class Queue {
 		return count;
 	}
 	
+	public void shiftQueue(int value){	//Shift the queue by a given value
+		System.out.println("Current Front: " + array[front]);
+		System.out.println("Current Rear VALUE: " + rear);
+		front = (front+value)%size;
+		rear = (rear+value)%size;
+	}
+	
 }
