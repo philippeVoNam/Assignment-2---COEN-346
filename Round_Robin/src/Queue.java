@@ -59,7 +59,7 @@ public class Queue {
 	    if (!isEmpty()) {
 	        int i = front;
 	        do {
-	            System.out.println(array[i]);
+	            System.out.println(array[i].getProcessName());
 	            if(i==rear)
 	                break;
 	            i = (i + 1) % size;
@@ -68,7 +68,15 @@ public class Queue {
 	    }
 	}
 	
-	public Process getFront(){	//Get front process
+	public int getFront(){
+		return front;
+	}
+	
+	public int getRear(){
+		return rear;
+	}
+	
+	public Process getFrontProcess(){	//Get front process
 		return array[front];
 	}
 	
@@ -81,8 +89,6 @@ public class Queue {
 	}
 	
 	public void shiftQueue(int value){	//Shift the queue by a given value
-		System.out.println("Current Front: " + array[front]);
-		System.out.println("Current Rear VALUE: " + rear);
 		front = (front+value)%size;
 		rear = (rear+value)%size;
 	}
