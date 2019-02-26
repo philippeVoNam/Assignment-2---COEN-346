@@ -18,12 +18,14 @@ public class Queue {
 			System.out.println("Queue is full");
 			return;
 		}
-		else if(isEmpty()){
+		else if(isEmpty()){ // if the queue is empty, then the first element of the queue should be at [0]
 			front = 0;
 			rear = 0;
 		}
-		else
-			rear = (rear+1)%size;
+		else { 
+			rear = (rear+1)%size; // else, shouldbe the rear incremented 
+		}
+
 		array[rear] = value;
 		
 	}

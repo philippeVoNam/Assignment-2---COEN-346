@@ -18,6 +18,7 @@ Class Scheduler :
 		- FIFO queue
 		- waiting list
 		- system clock
+		- done list
 
 	Methods : 
 
@@ -27,7 +28,7 @@ Class Scheduler :
 		- runProcessFifo() // decrements the remaining time of the processes given -> maybe should be run User ? 
 		- addToQueue() // add the process to the FIFO queue 
 
-		- back2Waiting() // pauses the process and send it to the back of the FIFO queue
+		- back2Tail() // pauses the process and send it to the back of the FIFO queue
 
 //  ###  //
 
@@ -43,9 +44,6 @@ Class User :
 		- Constructor :
 			- init processes and add to the list.
 			- init the Name
-
-		- decrementReadyTime() 
-		- runProcess() // decrements the remaining run time of the process 
 
 //  ###  //
 
@@ -67,9 +65,43 @@ Class Process
 
 		- getRemainingServiceTime() //
 		- getRemainingReadyTime() 
+		- runProcess() // decrements the remaining run time of the process 
+		- decrementReadyTime() 
 
-		
+
+//  ###  // 
+//  ###  // 
+//  ###  // 
+
+Flow of System : 
+
+	- Scheduler will have a "system clock"
+	- it will "tick" each seconds
+
+		with each tick : UPDATE -> RUN 
+
+			[UPDATE + ADD to QUEUE]
+			!?! concurrent throughout the users/processes : 
+				[these three methods are done sequentially, one after the other]
+				- decrement ready time ()
+				- check ready time ()
+				- add 2 queue () -> 
+					- add if ready
+					- keep in waiting list if not ready 
+
+			[RUN PROCESS]
+				- run the first process in the queue until :
+					- no more time allowed for him
+					- it is finished
+			
+			When done -> ticks again. 
+
+			- while (!FIFO_queue.empty()) // while there are still processes to be run
 
 
+
+
+
+				
 
 
