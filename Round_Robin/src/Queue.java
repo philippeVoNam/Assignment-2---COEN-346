@@ -59,7 +59,7 @@ public class Queue {
 	    if (!isEmpty()) {
 	        int i = front;
 	        do {
-	            System.out.println(array[i].getProcessName());
+	            System.out.println(array[i].getUserName() + array[i].getProcessNumber());
 	            if(i==rear)
 	                break;
 	            i = (i + 1) % size;
