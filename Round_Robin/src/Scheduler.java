@@ -9,11 +9,11 @@ public class Scheduler extends Thread{
 		//number of processes
 		
 		Queue processQueue = new Queue(3);
-		Process p1 = new Process("A", 0, 4, 3, 0, null, false);
-		Process p2 = new Process("A", 1, 1, 5, 0, null, false);
-		Process p3 = new Process("B", 0, 5, 6, 0, null, false);
+		Thread p1 = new Process("A", 0, 4, 3, 0, null, false);
+		Thread p2 = new Process("A", 1, 1, 5, 0, null, false);
+		Thread p3 = new Process("B", 0, 5, 6, 0, null, false);
 		//Process p4 = new Process("C", 0, 7, 4, 0);
-
+		
 		processQueue.enQueue(p1);
 		processQueue.enQueue(p2);
 		processQueue.enQueue(p3);
@@ -38,7 +38,7 @@ public class Scheduler extends Thread{
 		int quantum = 4;
 		int counter = 0;
 
-		int firstReadyTime = processQueue.getFrontProcess().getReadyTime(); // Initialize on first process
+		int firstReadyTime = ((Process) processQueue.getFrontProcess()).getReadyTime(); // Initialize on first process
 
 		int totalServiceTime = 0;
 		Queue readyQueue = new Queue(processQueue.getCount());
@@ -58,16 +58,16 @@ public class Scheduler extends Thread{
 				counter++;
 				//System.out.println("Counter is " + counter);
 			} else if (inProcess == true && counter == finishTime) {	//When the process is at the end of its critical section time
-				if(readyQueue.getFrontProcess().getServiceTime() > 0){
-					System.out.println("Time " + counter + ", User " + readyQueue.getFrontProcess().getUserName() + ", Process " + readyQueue.getFrontProcess().getProcessNumber() + ", Paused");
-					Process tempProcess = readyQueue.getFrontProcess();
-					totalServiceTime -= readyQueue.getFrontProcess().getAllowedTime(); // Minus total service time
+				if(((Process) readyQueue.getFrontProcess()).getServiceTime() > 0){
+					System.out.println("Time " + counter + ", User " + ((Process) readyQueue.getFrontProcess()).getUserName() + ", Process " + ((Process) readyQueue.getFrontProcess()).getProcessNumber() + ", Paused");
+					Process tempProcess = (Process) readyQueue.getFrontProcess();
+					totalServiceTime -= ((Process) readyQueue.getFrontProcess()).getAllowedTime(); // Minus total service time
 					readyQueue.deQueue();
 					readyQueue.enQueue(tempProcess);
 				}
 				else{
-					System.out.println("Time " + counter + ", User " + readyQueue.getFrontProcess().getUserName() + ", Process " + readyQueue.getFrontProcess().getProcessNumber() + ", Finished");
-					totalServiceTime -= readyQueue.getFrontProcess().getAllowedTime(); // Minus total service time
+					System.out.println("Time " + counter + ", User " + ((Process) readyQueue.getFrontProcess()).getUserName() + ", Process " + ((Process) readyQueue.getFrontProcess()).getProcessNumber() + ", Finished");
+					totalServiceTime -= ((Process) readyQueue.getFrontProcess()).getAllowedTime(); // Minus total service time
 					readyQueue.deQueue();
 				}
 				inProcess = false;
@@ -75,7 +75,10 @@ public class Scheduler extends Thread{
 			} else if (!readyQueue.isEmpty()) { // When ready queue is not empty
 				checkReadyTime2(readyQueue, processQueue, processQueue.getCount(), counter, userArray, userBool);
 				//System.out.println("In 3rd part");
-
+				Process threadProcess = (Process) readyQueue.getFrontProcess();
+				new Thread(threadProcess);
+				
+				
 				int userCountReady = 0;
 				int processCountReady = 0;
 				int currentProcessNumber = 0;
@@ -83,7 +86,7 @@ public class Scheduler extends Thread{
 				// Find the number of processes for that user (from which the
 				// process belongs to)
 				for (int j = 0; j < 2; j++) {
-					if (readyQueue.getFrontProcess().getUserName() == userArray[j].getName()) {
+					if (((Process) readyQueue.getFrontProcess()).getUserName() == userArray[j].getName()) {
 						currentProcessNumber = userArray[j].getNumberProcess();
 					}
 				}
@@ -95,7 +98,7 @@ public class Scheduler extends Thread{
 						//System.out.println("Ready queue process name: " + readyQueue.getFrontProcess().getUserName() 
 								//+ " User's name: "  + userArray[i].getName() + " " + userArray[i].getProcessArray()[j]);
 
-						if (readyQueue.getFrontProcess().getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true) {
+						if (((Process) readyQueue.getFrontProcess()).getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true) {
 							processCountReady++;
 						}
 					}
@@ -114,32 +117,32 @@ public class Scheduler extends Thread{
 				int sharedTime = quantum / (userCountReady * processCountReady);
 				System.out.println("Shared time is: " + sharedTime);
 				inProcess = true; // Critical section set true
-				readyQueue.getFrontProcess().setAllowedTime(sharedTime);
+				((Process) readyQueue.getFrontProcess()).setAllowedTime(sharedTime);
 				
 				
 				//If serviceTime is > allowedTime
-				if(readyQueue.getFrontProcess().getServiceTime() > readyQueue.getFrontProcess().getAllowedTime()){
-					System.out.println("Time " + counter + ", User " + readyQueue.getFrontProcess().getUserName() + ", Process " + readyQueue.getFrontProcess().getProcessNumber() + ", Started");
+				if(((Process) readyQueue.getFrontProcess()).getServiceTime() > ((Process) readyQueue.getFrontProcess()).getAllowedTime()){
+					System.out.println("Time " + counter + ", User " + ((Process) readyQueue.getFrontProcess()).getUserName() + ", Process " + ((Process) readyQueue.getFrontProcess()).getProcessNumber() + ", Started");
 					//System.out.println("In first IF");
-					readyQueue.getFrontProcess().setServiceTime(readyQueue.getFrontProcess().getServiceTime() - readyQueue.getFrontProcess().getAllowedTime());	//Minus service time of process
-					finishTime = counter + readyQueue.getFrontProcess().getAllowedTime(); // Set end of critical section
+					((Process) readyQueue.getFrontProcess()).setServiceTime(((Process) readyQueue.getFrontProcess()).getServiceTime() - ((Process) readyQueue.getFrontProcess()).getAllowedTime());	//Minus service time of process
+					finishTime = counter + ((Process) readyQueue.getFrontProcess()).getAllowedTime(); // Set end of critical section
 
 				}
 				else{		//If serviceTime <= allowedTime, dequeue the front process
 					//System.out.println("In SECOND IF");
-					System.out.println("Time " + counter + ", User " + readyQueue.getFrontProcess().getUserName() + ", Process " + readyQueue.getFrontProcess().getProcessNumber() + ", Started");
+					System.out.println("Time " + counter + ", User " + ((Process) readyQueue.getFrontProcess()).getUserName() + ", Process " + ((Process) readyQueue.getFrontProcess()).getProcessNumber() + ", Started");
 					//System.out.println("Process is /////: " + readyQueue.getFrontProcess().getUserName() + 
 							//readyQueue.getFrontProcess().getProcessNumber() + "  serviceTime is " +readyQueue.getFrontProcess().getServiceTime());
-					readyQueue.getFrontProcess().setAllowedTime(readyQueue.getFrontProcess().getServiceTime());
-					readyQueue.getFrontProcess().setServiceTime(readyQueue.getFrontProcess().getServiceTime() - readyQueue.getFrontProcess().getAllowedTime());	//Minus service time of process
+					((Process) readyQueue.getFrontProcess()).setAllowedTime(((Process) readyQueue.getFrontProcess()).getServiceTime());
+					((Process) readyQueue.getFrontProcess()).setServiceTime(((Process) readyQueue.getFrontProcess()).getServiceTime() - ((Process) readyQueue.getFrontProcess()).getAllowedTime());	//Minus service time of process
 					
-					finishTime = counter + readyQueue.getFrontProcess().getAllowedTime(); // Set end of critical section
+					finishTime = counter + ((Process) readyQueue.getFrontProcess()).getAllowedTime(); // Set end of critical section
 					
 					
 					for (int i = 0; i < 2; i++) {
 						for (int j = 0; j < userArray[i].getNumberProcess(); j++) {
 							
-							if (readyQueue.getFrontProcess().getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true && readyQueue.getFrontProcess().getProcessNumber() == j) {
+							if (((Process) readyQueue.getFrontProcess()).getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true && ((Process) readyQueue.getFrontProcess()).getProcessNumber() == j) {
 								//System.out.println(userArray[i].getName() + j);
 								userArray[i].getProcessArray()[j] = false;
 							}
@@ -170,7 +173,7 @@ public class Scheduler extends Thread{
 					// Find the number of processes for that user (from which the
 					// process belongs to)
 					for (int j = 0; j < 2; j++) {
-						if (readyQueue.getFrontProcess().getUserName() == userArray[j].getName()) {
+						if (((Process) readyQueue.getFrontProcess()).getUserName() == userArray[j].getName()) {
 							currentProcessNumber = userArray[j].getNumberProcess();
 						}
 					}
@@ -182,7 +185,7 @@ public class Scheduler extends Thread{
 							//System.out.println("Ready queue process name: " + readyQueue.getFrontProcess().getUserName() 
 									//+ " User's name: "  + userArray[i].getName() + " " + userArray[i].getProcessArray()[j]);
 
-							if (readyQueue.getFrontProcess().getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true) {
+							if (((Process) readyQueue.getFrontProcess()).getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true) {
 								processCountReady++;
 							}
 						}
@@ -201,32 +204,32 @@ public class Scheduler extends Thread{
 					int sharedTime = quantum / (userCountReady * processCountReady);
 					System.out.println("Shared time is: " + sharedTime);
 					inProcess = true; // Critical section set true
-					readyQueue.getFrontProcess().setAllowedTime(sharedTime);
+					((Process) readyQueue.getFrontProcess()).setAllowedTime(sharedTime);
 					
 					
 					//If serviceTime is > allowedTime
-					if(readyQueue.getFrontProcess().getServiceTime() > readyQueue.getFrontProcess().getAllowedTime()){
-						System.out.println("Time " + counter + ", User " + readyQueue.getFrontProcess().getUserName() + ", Process " + readyQueue.getFrontProcess().getProcessNumber() + ", Started");
+					if(((Process) readyQueue.getFrontProcess()).getServiceTime() > ((Process) readyQueue.getFrontProcess()).getAllowedTime()){
+						System.out.println("Time " + counter + ", User " + ((Process) readyQueue.getFrontProcess()).getUserName() + ", Process " + ((Process) readyQueue.getFrontProcess()).getProcessNumber() + ", Started");
 						//System.out.println("In first IF");
-						readyQueue.getFrontProcess().setServiceTime(readyQueue.getFrontProcess().getServiceTime() - readyQueue.getFrontProcess().getAllowedTime());	//Minus service time of process
-						finishTime = counter + readyQueue.getFrontProcess().getAllowedTime(); // Set end of critical section
+						((Process) readyQueue.getFrontProcess()).setServiceTime(((Process) readyQueue.getFrontProcess()).getServiceTime() - ((Process) readyQueue.getFrontProcess()).getAllowedTime());	//Minus service time of process
+						finishTime = counter + ((Process) readyQueue.getFrontProcess()).getAllowedTime(); // Set end of critical section
 
 					}
 					else{		//If serviceTime <= allowedTime, dequeue the front process
 						//System.out.println("In SECOND IF");
-						System.out.println("Time " + counter + ", User " + readyQueue.getFrontProcess().getUserName() + ", Process " + readyQueue.getFrontProcess().getProcessNumber() + ", Started");
+						System.out.println("Time " + counter + ", User " + ((Process) readyQueue.getFrontProcess()).getUserName() + ", Process " + ((Process) readyQueue.getFrontProcess()).getProcessNumber() + ", Started");
 						//System.out.println("Process is /////: " + readyQueue.getFrontProcess().getUserName() + 
 								//readyQueue.getFrontProcess().getProcessNumber() + "  serviceTime is " +readyQueue.getFrontProcess().getServiceTime());
-						readyQueue.getFrontProcess().setAllowedTime(readyQueue.getFrontProcess().getServiceTime());
-						readyQueue.getFrontProcess().setServiceTime(readyQueue.getFrontProcess().getServiceTime() - readyQueue.getFrontProcess().getAllowedTime());	//Minus service time of process
+						((Process) readyQueue.getFrontProcess()).setAllowedTime(((Process) readyQueue.getFrontProcess()).getServiceTime());
+						((Process) readyQueue.getFrontProcess()).setServiceTime(((Process) readyQueue.getFrontProcess()).getServiceTime() - ((Process) readyQueue.getFrontProcess()).getAllowedTime());	//Minus service time of process
 						
-						finishTime = counter + readyQueue.getFrontProcess().getAllowedTime(); // Set end of critical section
+						finishTime = counter + ((Process) readyQueue.getFrontProcess()).getAllowedTime(); // Set end of critical section
 						
 						
 						for (int i = 0; i < 2; i++) {
 							for (int j = 0; j < userArray[i].getNumberProcess(); j++) {
 								
-								if (readyQueue.getFrontProcess().getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true && readyQueue.getFrontProcess().getProcessNumber() == j) {
+								if (((Process) readyQueue.getFrontProcess()).getUserName() == userArray[i].getName() && userArray[i].getProcessArray()[j] == true && ((Process) readyQueue.getFrontProcess()).getProcessNumber() == j) {
 									//System.out.println(userArray[i].getName() + j);
 									userArray[i].getProcessArray()[j] = false;
 								}
@@ -258,7 +261,7 @@ public class Scheduler extends Thread{
 		if (!originalQueue.isEmpty()) {
 			int i = 0;
 			do {
-				totalServiceTime += originalQueue.getFrontProcess().getServiceTime();
+				totalServiceTime += ((Process) originalQueue.getFrontProcess()).getServiceTime();
 				originalQueue.shiftQueue(1);
 				i++;
 
@@ -275,7 +278,7 @@ public class Scheduler extends Thread{
 
 		if (!originalQueue.isEmpty()) {
 			for (int i = 0; i < queueCount; i++) {
-				if (originalQueue.getFrontProcess().getReadyTime() == counter) {
+				if (((Process) originalQueue.getFrontProcess()).getReadyTime() == counter) {
 
 					readyQueue.enQueue(originalQueue.getFrontProcess());
 
@@ -283,17 +286,17 @@ public class Scheduler extends Thread{
 					// split quantum time
 					// 2 needs to change to number of users
 					for (int j = 0; j < userArray.length; j++) {
-						if (originalQueue.getFrontProcess().getUserName() == userArray[j].getName()) {
+						if (((Process) originalQueue.getFrontProcess()).getUserName() == userArray[j].getName()) {
 							//System.out.println("These are equal: "  + originalQueue.getFrontProcess().getUserName() + " " + userArray[j].getName());
 							userBool[j] = true; // Set the boolean for the user
-							userArray[j].getProcessArray()[originalQueue.getFrontProcess().getProcessNumber()] = true; // Set boolean for the process
+							userArray[j].getProcessArray()[((Process) originalQueue.getFrontProcess()).getProcessNumber()] = true; // Set boolean for the process
 							//System.out.println(userArray[j].getName() + originalQueue.getFrontProcess().getProcessNumber() + " SET TO " + 
 									//userArray[j].getProcessArray()[originalQueue.getFrontProcess().getProcessNumber()]);
 						}
 					}
 
-					System.out.println("Added process " + originalQueue.getFrontProcess().getUserName()
-							+ originalQueue.getFrontProcess().getProcessNumber());
+					System.out.println("Added process " + ((Process) originalQueue.getFrontProcess()).getUserName()
+							+ ((Process) originalQueue.getFrontProcess()).getProcessNumber());
 					originalQueue.shiftQueue(1);
 				} else {
 					originalQueue.shiftQueue(1);

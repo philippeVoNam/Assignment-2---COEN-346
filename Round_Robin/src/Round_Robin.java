@@ -5,6 +5,8 @@ public class Round_Robin {
 		Scheduler scheduler = new Scheduler();
 		new Thread(scheduler, "Scheduler");
 		
+		Thread scheduleThread = new Scheduler();
+		
 		scheduler.start();
 	}
 

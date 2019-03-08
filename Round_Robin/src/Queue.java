@@ -1,10 +1,10 @@
 
-public class Queue {
+public class Queue extends Thread{
 
 	private int front;
 	private int rear;
 	private int size;
-	private Process[] array;
+	private Thread[] array;
 	
 	public Queue(int size){
 		front = -1;
@@ -13,7 +13,7 @@ public class Queue {
 		this.size =size;
 	}
 	
-	public void enQueue(Process value){
+	public void enQueue(Thread value){
 		if(isFull()){
 			System.out.println("Queue is full");
 			return;
@@ -59,7 +59,7 @@ public class Queue {
 	    if (!isEmpty()) {
 	        int i = front;
 	        do {
-	            System.out.println(array[i].getUserName() + array[i].getProcessNumber());
+	            //System.out.println(array[i].getUserName() + array[i].getProcessNumber());
 	            if(i==rear)
 	                break;
 	            i = (i + 1) % size;
@@ -76,7 +76,7 @@ public class Queue {
 		return rear;
 	}
 	
-	public Process getFrontProcess(){	//Get front process
+	public Thread getFrontProcess(){	//Get front process
 		return array[front];
 	}
 	
