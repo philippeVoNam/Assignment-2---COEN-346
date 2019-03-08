@@ -1,18 +1,28 @@
 
-public class Process {
+public class Process extends Thread{
 
 	private String userName;
 	private int pNumber;
 	private int rTime;
 	private int sTime;
 	private int allowedTime;
+	private Scheduler sched;
+	private boolean hasCPU;
 	
-	public Process(String userName,int pNumber , int rTime, int sTime, int allowedTime){
+	@Override
+	public void run() {
+		
+		
+	}
+	
+	public Process(String userName,int pNumber , int rTime, int sTime, int allowedTime, Scheduler sched, boolean hasCPU){
 		this.userName = userName;
 		this.pNumber = pNumber;
 		this.rTime = rTime;
 		this.sTime = sTime;
 		this.allowedTime = allowedTime;
+		this.sched = sched;
+		this.hasCPU = hasCPU;
 	}
 	
 	public String getUserName(){
@@ -35,6 +45,14 @@ public class Process {
 		return allowedTime;
 	}
 	
+	public Scheduler getScheduler() {
+		return sched;
+	}
+	
+	public boolean getCPU() {
+		return hasCPU;
+	}
+	
 	public void setProcessName(String userName){
 		this.userName = userName;
 	}
@@ -53,5 +71,13 @@ public class Process {
 	
 	public void setAllowedTime(int allowedTime){
 		this.allowedTime = allowedTime;
+	}
+	
+	public void setScheduler(Scheduler sched) {
+		this.sched = sched;
+	}
+	
+	public void setCPU(boolean hasCPU) {
+		this.hasCPU = hasCPU;
 	}
 }
