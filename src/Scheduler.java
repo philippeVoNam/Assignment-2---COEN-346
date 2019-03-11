@@ -179,7 +179,7 @@ public class Scheduler extends Thread {
                 }
 
                 newProcessInTown = true;
-
+                masterTime--;
                 break;
 
             case OUTOFTIME:
@@ -194,7 +194,8 @@ public class Scheduler extends Thread {
                     // create a copy reference of the head of the queue
                     runningProcess = readyQueue.element();
 
-                    System.out.println(runningProcess.getUserName() + " P" + runningProcess.getProcessNumber() + " is Running");
+                    System.out.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Running");
+                    printStream.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Running");
                 }
 
                 newProcessInTown = true;

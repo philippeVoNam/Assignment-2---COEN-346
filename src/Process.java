@@ -112,7 +112,7 @@ public class Process extends Thread{
 
         remainingServiceTime--;
 
-        if(remainingServiceTime == 0) {
+        if(remainingServiceTime <= 0) {
             this.stop_(); // tells the thread to stop
         }
     }
