@@ -157,6 +157,10 @@ public class Scheduler extends Thread {
 
                 System.out.println(runningProcess.getUserName() + " P" + runningProcess.getProcessNumber() + " is Running " + "- Remaining Time : " + runningProcess.getRemainingServiceTime());
 
+                if(runningProcess.getRemainingServiceTime() < 0){   //if negative remaining service time, recover the time
+                    masterTime += runningProcess.getRemainingServiceTime();
+                }
+
 
                 break;
 
@@ -186,7 +190,7 @@ public class Scheduler extends Thread {
 
                 System.out.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Paused");
                 printStream.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Paused");
-
+                masterTime--;
                 this.sendHead2Tail(); // send the head process to the back of the tail
 
                 if (!readyQueue.isEmpty()) {
