@@ -250,9 +250,9 @@ public class Scheduler extends Thread {
 
             this.updateJobList(); // decrement the remaining time of all the process in the jobList
 
-            if((runningTime % timeQuantum == 0) || firstCycle == true) {// if its a new cycle or the first
+	    this.checkReady_add2Queue();
 
-                this.checkReady_add2Queue();
+            if((runningTime % timeQuantum == 0) || firstCycle == true) {// if its a new cycle or the first        
 
                 if(!readyQueue.isEmpty()) {
 
