@@ -8,8 +8,7 @@ public class Process extends Thread{
 
     private String number;
     private String userName;
-    private int rTime;
-    private int sTime;
+
     private int allowedTime;
 
     private int remainingRemainderTime;
@@ -27,12 +26,11 @@ public class Process extends Thread{
 
     public Process(String number, int rTime, int sTime, String userName){
         this.number = number;
-        this.rTime = rTime;
-        this.sTime = sTime;
+
         this.allowedTime = 0;
 
-        this.remainingRemainderTime = this.rTime;
-        this.remainingServiceTime = this.sTime;
+        this.remainingRemainderTime = rTime;
+        this.remainingServiceTime = sTime;
         this.ready = false;
         this.done = false;
 
@@ -61,11 +59,11 @@ public class Process extends Thread{
     }
 
     public int getReadyTime(){
-        return rTime;
+        return remainingRemainderTime;
     }
 
     public int getServiceTime(){
-        return sTime;
+        return remainingServiceTime;
     }
 
     public int getAllowedTime(){
@@ -77,11 +75,11 @@ public class Process extends Thread{
     }
 
     public void setReadyTime(int rTime){
-        this.rTime = rTime;
+        this.remainingRemainderTime = rTime;
     }
 
     public void setServiceTime(int sTime){
-        this.sTime = sTime;
+        this.remainingServiceTime = sTime;
     }
 
     public void setAllowedTime(int allowedTime){
@@ -121,10 +119,11 @@ public class Process extends Thread{
 
     public void reevaluation(int currentTime) throws InterruptedException {
 
-        if(allowedTime <= remainingAllowedTIme) {
+        if(allowedTime < remainingAllowedTIme) {
 
                 this.suspend(); // makes the thread pause
                 state = State.OUTOFTIME;
+                //inProcess = false;
         }
         else {
             // run process + decrementServiceTime

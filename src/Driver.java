@@ -1,3 +1,4 @@
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,8 +20,7 @@ public class Driver {
         int timeQuantum = 0;
 
         // Reading Input File
-        Path path = Paths.get("/home/nam/IdeaProjects/COEN-346_Assignment-2/input2.txt");
-        Scanner scanner = new Scanner(path);
+        Scanner scanner = new Scanner(new FileInputStream("input.txt"));
         System.out.println("Read text file using Scanner");
         //read line by line
 

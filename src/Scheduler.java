@@ -1,6 +1,13 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 public class Scheduler extends Thread {
+
+    FileOutputStream outputStream;
+    PrintStream printStream;
+
 
     Queue<Process> readyQueue;
     ArrayList<Process> jobList;
@@ -9,13 +16,15 @@ public class Scheduler extends Thread {
     Process runningProcess; // the current running process
 
     int timeQuantum;
+    int masterTime = 0; // the total time elapsed
 
     int numberOfProcesses;
 
     boolean newProcessInTown;
 
-    public Scheduler(ArrayList<Process> processList, int timeQuantum) {
-
+    public Scheduler(ArrayList<Process> processList, int timeQuantum) throws FileNotFoundException {
+        this.outputStream = new FileOutputStream("output.txt");
+        this.printStream = new PrintStream(outputStream);
         this.readyQueue = new LinkedList<Process>();
         this.jobList = new ArrayList<Process>();
         this.finishedList = new ArrayList<Process>();
@@ -148,11 +157,13 @@ public class Scheduler extends Thread {
 
                 System.out.println(runningProcess.getUserName() + " P" + runningProcess.getProcessNumber() + " is Running " + "- Remaining Time : " + runningProcess.getRemainingServiceTime());
 
+
                 break;
 
             case FINISHED:
 
-                System.out.println(runningProcess.getUserName() + " P" + runningProcess.getProcessNumber() + " is Finished");
+                System.out.println("Time " + currentTime + ", User " + runningProcess.getUserName() + " ,Process " + runningProcess.getProcessNumber() + ", Finished");
+                printStream.println("Time " + currentTime + ", User " + runningProcess.getUserName() + " ,Process " + runningProcess.getProcessNumber() + ", Finished");
 
                 // if finished -> remove the process from the head and add to the finish List
                 Process tempProcess = readyQueue.remove();
@@ -163,7 +174,8 @@ public class Scheduler extends Thread {
                     // create a copy reference of the head of the queue
                     runningProcess = readyQueue.element();
 
-                    System.out.println(runningProcess.getUserName() + " P" + runningProcess.getProcessNumber() + " is Running");
+                    System.out.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Running");
+                    printStream.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Running");
                 }
 
                 newProcessInTown = true;
@@ -172,7 +184,8 @@ public class Scheduler extends Thread {
 
             case OUTOFTIME:
 
-                System.out.println(runningProcess.getUserName() + " P" + runningProcess.getProcessNumber() + " is Paused");
+                System.out.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Paused");
+                printStream.println("Time " + currentTime + ", User " + runningProcess.getUserName() + ", Process " + runningProcess.getProcessNumber() + ", Paused");
 
                 this.sendHead2Tail(); // send the head process to the back of the tail
 
@@ -220,7 +233,7 @@ public class Scheduler extends Thread {
     public void run() {
 
         int runningTime = 0; // the elapsed time since iteration cycle began
-        int masterTime = 0; // the total time elapsed
+
 
         boolean firstCycle = true;
 
@@ -228,18 +241,16 @@ public class Scheduler extends Thread {
 
         boolean flagResetRunningTime = false;
 
-        while( ! (finishedList.size() == numberOfProcesses) ) { // while the finishedList is not full
+        while(  (finishedList.size() < numberOfProcesses) ) { // while the finishedList is not full
 
-            runningTime++;
-            masterTime++; // tick the time
 
-            System.out.println("Time " + masterTime);
+            //printStream.print("Time " + masterTime + ", ");
 
             if(!readyQueue.isEmpty()) {
 
                 try {
 
-                    this.updateCurrentProcess(runningTime); // update the current Process
+                    this.updateCurrentProcess(masterTime); // update the current Process
                 }
                 catch(InterruptedException e) {
 
@@ -250,9 +261,11 @@ public class Scheduler extends Thread {
 
             this.updateJobList(); // decrement the remaining time of all the process in the jobList
 
+            this.checkReady_add2Queue();
+
             if((runningTime % timeQuantum == 0) || firstCycle == true) {// if its a new cycle or the first
 
-                this.checkReady_add2Queue();
+
 
                 if(!readyQueue.isEmpty()) {
 
@@ -288,6 +301,11 @@ public class Scheduler extends Thread {
                 runningTime = 0; // reset the running Time (elapsed Time)
                 flagResetRunningTime = false;
             }
+
+            runningTime++;
+            masterTime++; // tick the time
+
+            System.out.println("Time " + masterTime);
 
         }
 
